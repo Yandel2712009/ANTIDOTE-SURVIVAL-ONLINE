@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>ANTIDOTE SURVIVAL</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Inter:wght@700;800;900&display=swap');
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07060a;color:white;font-family:Inter,Arial,sans-serif}button,input{font-family:Inter,Arial;font-weight:900}button{border:1px solid #ff2d62;background:linear-gradient(180deg,#ff2d62,#b9003a);color:white;border-radius:14px;padding:13px 18px;cursor:pointer;box-shadow:0 0 20px rgba(255,45,98,.25)}button:hover{filter:brightness(1.14)}button.secondary{background:linear-gradient(180deg,#25232e,#111117);border-color:rgba(255,255,255,.17)}button.small{padding:8px 12px;border-radius:10px;font-size:12px}.hidden{display:none!important}
+#bg{position:fixed;inset:0;z-index:0;background:radial-gradient(circle at 50% 15%,rgba(255,32,82,.28),transparent 38%),linear-gradient(rgba(255,35,85,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(255,35,85,.14) 1px,transparent 1px),#07060a;background-size:auto,54px 54px,54px 54px,auto;animation:bg 16s linear infinite}@keyframes bg{to{background-position:0 0,54px 54px,54px 54px,0 0}}.block{position:fixed;width:78px;height:32px;background:rgba(255,0,64,.12);z-index:1;animation:float 9s ease-in-out infinite}.b1{left:5%;top:30%}.b2{left:18%;top:42%;animation-delay:-3s}.b3{left:75%;top:18%;animation-delay:-5s}.b4{left:87%;top:45%;animation-delay:-2s}.b5{left:58%;top:70%;animation-delay:-6s}@keyframes float{50%{transform:translateY(-28px) translateX(18px);opacity:.5}}
+.music{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;gap:8px;background:rgba(9,9,16,.94);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:6px 10px;box-shadow:0 0 22px rgba(0,0,0,.5);font-size:13px}.music button{width:38px;height:38px;border-radius:50%;padding:0;background:linear-gradient(180deg,#353240,#171721)}.music input{accent-color:#ff3b70;width:95px}.music small{font-weight:900;color:#ddd;font-size:10px}.toast{position:fixed;right:22px;bottom:22px;z-index:250;display:grid;gap:8px}.toast div{background:rgba(15,15,22,.95);border:1px solid rgba(255,48,91,.65);border-radius:14px;padding:12px 16px;box-shadow:0 0 24px rgba(255,0,70,.2)}
+.columns{position:fixed;inset:22px;z-index:5;display:grid;grid-template-columns:320px 1fr 330px;gap:20px;pointer-events:none}.panel{pointer-events:auto;position:relative;z-index:30;border:1px solid rgba(255,255,255,.13);border-radius:24px;background:linear-gradient(180deg,rgba(22,20,31,.92),rgba(7,8,13,.92));padding:18px;box-shadow:inset 0 0 44px rgba(255,30,77,.05)}.panel h3{margin:0 0 12px;color:#ffdf6b;font-size:14px;letter-spacing:1px}.row,.leader,.member,.chatMsg{padding:12px 14px;margin:8px 0;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}.row,.leader,.member{display:flex;justify-content:space-between;align-items:center}.teamBox{font-size:13px;color:#ddd;margin-top:10px}.teamBox b,.chatMsg b,.leader b{color:#ffdf6b}.chatList{height:230px;overflow:auto}.chatMsg{font-size:12px;line-height:1.35}.chatInput{display:flex;gap:7px;margin-top:9px}.chatInput input,.nameInput,.codeInput{width:100%;padding:13px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:#11111a;color:#fff;user-select:text}.chatInput button{padding:10px 12px}
+.screen{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;pointer-events:none}.card{pointer-events:auto;width:min(720px,90vw);border:1px solid rgba(255,38,85,.55);border-radius:28px;background:linear-gradient(180deg,rgba(36,16,30,.9),rgba(5,5,10,.95));box-shadow:0 0 70px rgba(255,30,77,.15),inset 0 0 50px rgba(255,30,77,.06);padding:36px;text-align:center}.logo{font-family:'Black Ops One',Impact;font-size:clamp(46px,7vw,92px);line-height:.9;color:#ff275d;text-shadow:0 0 18px #ff275d,0 0 45px rgba(255,39,93,.6)}.logo span{display:block;color:#fff;text-shadow:0 0 18px rgba(255,255,255,.7)}.sub{color:#c9bdc5;max-width:620px;margin:18px auto 24px}.stack{display:grid;gap:12px;max-width:440px;margin:12px auto 0}.modal{position:fixed;inset:0;z-index:150;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45)}.modalBox{pointer-events:auto;width:min(610px,92vw);border:1px solid rgba(255,38,85,.75);border-radius:22px;background:linear-gradient(180deg,rgba(45,22,38,.98),rgba(8,8,14,.99));padding:26px;box-shadow:0 0 60px rgba(255,30,77,.18)}.modalBox h2{font-family:'Black Ops One';font-size:38px;margin:8px 0 20px;color:#ff2c63;text-align:center;text-shadow:0 0 18px #ff2c63}.close{float:right;background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.17);padding:8px 12px}.code{font-size:32px;color:#ffdf66;background:#0c0c12;border:1px solid rgba(255,255,255,.12);border-radius:15px;padding:14px;text-align:center;margin:12px 0}.modeBtns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.shopGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.item{border:1px solid rgba(255,49,93,.7);border-radius:16px;background:rgba(0,0,0,.43);padding:18px;text-align:center}.item .ico{font-size:42px}.item p{margin:0 0 12px;color:#bbb;font-size:13px}.backBtn{position:absolute;top:20px;right:20px}.deathStats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.deathStats div{padding:16px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+#game{position:fixed;inset:0;z-index:50;background:#050508}canvas{width:100%;height:100%;display:block}.hud{position:fixed;top:14px;left:14px;right:14px;z-index:75;display:flex;gap:10px;align-items:center;pointer-events:none}.hpBox{width:260px;border:1px solid #ff315d;background:rgba(0,0,0,.68);border-radius:11px;padding:8px}.hpFill{height:18px;border-radius:5px;background:linear-gradient(90deg,#ff2f5e,#ff7784);box-shadow:0 0 12px #ff2f5e;width:100%;transition:.15s}.hudChip{background:rgba(0,0,0,.66);border:1px solid rgba(255,49,93,.75);border-radius:10px;padding:12px 16px;font-weight:900}.weaponBar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:76;display:flex;gap:10px}.slot{min-width:92px;text-align:center;background:rgba(0,0,0,.68);border:1px solid rgba(255,255,255,.15);border-radius:13px;padding:10px;cursor:pointer}.slot.active{border-color:#ff315d;box-shadow:0 0 20px rgba(255,49,93,.4)}.exitPlay{position:fixed;right:16px;top:16px;z-index:77}.mobileBtns{display:none}
+@media(max-width:980px){.columns{grid-template-columns:1fr;inset:10px}.columns .panel{display:none}.card{padding:24px}.hud{flex-wrap:wrap}.hpBox{width:170px}.shopGrid{grid-template-columns:1fr}.screen{align-items:flex-start;padding-top:92px}.music input{width:90px}.modeBtns{grid-template-columns:1fr}.mobileBtns{display:block}}
+</style>
+</head>
+<body>
+<div id="bg"></div><div class="block b1"></div><div class="block b2"></div><div class="block b3"></div><div class="block b4"></div><div class="block b5"></div>
+<div class="music"><button id="musicBtn">▶</button><b>🎵 Música Tap Tap</b><input id="vol" type="range" min="0" max="1" step="0.01" value="0.55"><small id="musicState">OFF</small></div><div id="toast" class="toast"></div>
+<div id="lobbyPanels" class="columns"><aside class="panel"><h3>PROGRESO</h3><div class="row"><span>💰 Monedas</span><b id="pCoins">0</b></div><div class="row"><span>☠️ Kills totales</span><b id="pKills">0</b></div><div class="row"><span>🏆 Mejor oleada</span><b id="pWave">0</b></div><hr style="border-color:rgba(255,255,255,.12)"><h3>EQUIPO</h3><button id="createTeam" style="width:100%">CREAR EQUIPO</button><button id="joinTeam" class="secondary" style="width:100%;margin-top:10px">UNIRSE CON CÓDIGO</button><button id="leaveTeam" class="secondary small hidden" style="width:100%;margin-top:10px">SALIR DEL EQUIPO</button><div id="teamInfo" class="teamBox">No estás en equipo.</div><div id="teamMembers"></div></aside><main></main><aside class="panel"><h3>TOP JUGADORES</h3><div id="leaders"></div><hr style="border-color:rgba(255,255,255,.12)"><h3>CHAT GLOBAL</h3><div id="chatList" class="chatList"></div><div class="chatInput"><input id="chatText" maxlength="80" placeholder="Escribe aquí..."><button id="sendChat">ENVIAR</button></div></aside></div>
+<section id="menu" class="screen"><div class="card"><div class="logo">ANTIDOTE<span>SURVIVAL</span></div><p class="sub">Sobrevive oleadas, compra armas, arma tu escuadra y derrota jefes que disparan.</p><input class="nameInput" id="playerName" maxlength="14" placeholder="Tu nombre"><div class="stack"><button id="playSolo">JUGAR SOLO</button><button id="playTeam" class="secondary">JUGAR CON EQUIPO</button><button id="openShop" class="secondary">🛒 VER TIENDA</button><button id="openControls" class="secondary">CONTROLES</button></div></div></section>
+<section id="shop" class="screen hidden"><div class="card" style="width:min(980px,94vw);position:relative"><button class="small secondary backBtn" data-back>VOLVER</button><h2 style="font-family:Black Ops One;color:#ff2b62;font-size:42px;margin:0 0 15px">🛒 TIENDA DE ARMAS</h2><div class="row" style="max-width:260px;margin:0 auto 20px"><span>💰 Tus monedas</span><b id="shopCoins">0</b></div><div id="shopGrid" class="shopGrid"></div></div></section>
+<section id="controls" class="screen hidden"><div class="card"><button class="small secondary backBtn" data-back>VOLVER</button><h2 style="font-family:Black Ops One;color:#ff2b62;font-size:40px">CONTROLES</h2><p>💻 PC: WASD para moverte · Mouse para apuntar · Click para disparar · 1/2/3/4 para cambiar armas.</p><p>📱 Móvil: usa los botones táctiles y dispara con el botón rojo. Crea equipo, invita con código y juega partidas con tu escuadra.</p></div></section>
+<section id="game" class="hidden"><canvas id="c"></canvas><button id="exitGame" class="secondary small exitPlay">SALIR</button><div class="hud"><div class="hpBox">❤️ VIDA <div id="hpFill" class="hpFill"></div><small id="hpText">100/100</small></div><div class="hudChip">💰 <span id="coinsHud">0</span></div><div class="hudChip">☠️ <span id="killsHud">0</span></div><div class="hudChip">🌊 OLEADA <span id="waveHud">1</span></div><div class="hudChip">🧟 <span id="zHud">0</span></div><div class="hudChip">👑 JEFE <span id="bossHud">NO</span></div></div><div id="weaponBar" class="weaponBar"></div></section>
+<section id="death" class="screen hidden"><div class="card"><div class="logo" style="font-size:58px">HAS MUERTO</div><p class="sub">Resumen de tu partida</p><div class="deathStats"><div>☠️ Kills<br><b id="dKills">0</b></div><div>💰 Ganado<br><b id="dCoins">0</b></div><div>🌊 Oleada<br><b id="dWave">0</b></div><div>⏱️ Tiempo<br><b id="dTime">0s</b></div></div><div class="stack"><button id="again">JUGAR DE NUEVO</button><button id="deathMenu" class="secondary">MENÚ PRINCIPAL</button></div></div></section>
+<script>
+const $=id=>document.getElementById(id);const screens=['menu','shop','controls','game','death'];function screen(id){screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));$('lobbyPanels').classList.toggle('hidden',id==='game'||id==='death');if(id==='shop')renderShop();updateLobby()}function toast(t){let d=document.createElement('div');d.textContent=t;$('toast').appendChild(d);setTimeout(()=>d.remove(),2600)}
+let data=JSON.parse(localStorage.getItem('antidote_survival_v8')||'{}');data.coins??=2200;data.kills??=0;data.bestWave??=0;data.name??='Jugador'+Math.floor(Math.random()*99);data.unlocked??=['pistol'];data.weapon??='pistol';data.leaders??=[];data.chat??=[{name:'Sistema',text:'Bienvenido al chat global de ANTIDOTE.'}];data.team??=null;data.nameLocked??=false;data.teams??={};function save(){localStorage.setItem('antidote_survival_v8',JSON.stringify(data))}function playerName(lock=false){let inp=$('playerName');let v=(inp.value||data.name||'Jugador').trim().replace(/[^a-zA-Z0-9_ÁÉÍÓÚáéíóúñÑ ]/g,'').slice(0,14);if(!v)v='Jugador';if(data.nameLocked&&data.name){inp.value=data.name;inp.disabled=true;return data.name}data.name=v;inp.value=v;if(lock){data.nameLocked=true;inp.disabled=true;toast('Nombre guardado: '+v)}save();return v}
+function updateLobby(){playerName(false);$('pCoins').textContent=data.coins;$('pKills').textContent=data.kills;$('pWave').textContent=data.bestWave;$('leaveTeam').classList.toggle('hidden',!data.team);if(data.team){let t=data.teams[data.team.code]||data.team;data.team=t;$('teamInfo').innerHTML=`Equipo <b>${t.mode}</b><br>Código: <b>${t.code}</b><br>Líder: <b>${t.leader||t.members?.[0]||data.name}</b>`;$('teamMembers').innerHTML=(t.members||[]).map(m=>`<div class="member"><span>${m===(t.leader||t.members[0])?'👑':'👤'} ${m}</span><b>${m===data.name?'TÚ':'LISTO'}</b></div>`).join('')}else{$('teamInfo').textContent='No estás en equipo.';$('teamMembers').innerHTML=''}let map={};(data.leaders||[]).forEach(p=>{if(p.kills>0){map[p.name]=Math.max(map[p.name]||0,p.kills)}});if(data.kills>0)map[data.name]=Math.max(map[data.name]||0,data.kills);let board=Object.entries(map).map(([name,kills])=>({name,kills})).sort((a,b)=>b.kills-a.kills).slice(0,6);$('leaders').innerHTML=board.length?board.map((p,i)=>`<div class="leader"><span>#${i+1} ${p.name}</span><b>${p.kills}</b></div>`).join(''):'<div class="chatMsg"><b>Sistema</b>: juega una partida para aparecer aquí.</div>';$('chatList').innerHTML=data.chat.slice(-20).map(m=>`<div class="chatMsg"><b>${m.name}</b>: ${String(m.text).replace(/[<>]/g,'')}</div>`).join('');$('chatList').scrollTop=999999;save()}
+function closeModal(){document.querySelectorAll('.modal').forEach(m=>m.remove())}function modal(html){closeModal();let m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="modalBox"><button class="close" onclick="closeModal()">X</button>${html}</div>`;document.body.appendChild(m);return m}
+$('createTeam').onclick=()=>modal(`<h2>CREAR EQUIPO</h2><p>Elige modo y crea un código para tus amigos.</p><div class="modeBtns"><button data-mode="SOLO">SOLO</button><button data-mode="DUO">DUO</button><button data-mode="ESCUADRA">ESCUADRA</button></div>`);
+document.addEventListener('click',e=>{let m=e.target.closest('[data-mode]');if(!m)return;makeTeam(m.dataset.mode)});
+window.makeTeam=mode=>{let name=playerName(true);let code=Math.random().toString(36).slice(2,8).toUpperCase();let team={mode,code,leader:name,members:[name],max:mode==='SOLO'?1:(mode==='DUO'?2:4)};data.teams[code]=team;data.team=team;toast('Equipo creado: '+code);closeModal();updateLobby()};
+$('joinTeam').onclick=()=>modal(`<h2>UNIRSE</h2><p>Pon el código del equipo.</p><input id="joinCode" class="codeInput" placeholder="ABC123" maxlength="8"><button id="joinConfirm" style="width:100%;margin-top:12px">UNIRSE</button><p style="font-size:12px;color:#aaa">El líder comparte este código. Si el líder sale, el equipo se cierra.</p>`);
+document.addEventListener('click',e=>{if(e.target&&e.target.id==='joinConfirm')joinByCode()});
+window.joinByCode=()=>{let c=($('joinCode')?.value||'').trim().toUpperCase();if(!c)return toast('Escribe un código');let name=playerName(true);let team=data.teams[c];if(!team)return toast('Ese código no existe en este navegador');let max=team.max||4;if(!team.members.includes(name)&&team.members.length>=max)return toast('Equipo lleno');if(!team.members.includes(name))team.members.push(name);data.teams[c]=team;data.team=team;toast('Te uniste al equipo '+c);closeModal();updateLobby()};$('leaveTeam').onclick=()=>{if(data.team&&data.teams[data.team.code]){let t=data.teams[data.team.code]; if(t.leader===data.name){delete data.teams[data.team.code]; toast('El líder salió: equipo cerrado')} else {t.members=(t.members||[]).filter(m=>m!==data.name); toast('Saliste del equipo')}} data.team=null; updateLobby()};
+$('sendChat').onclick=()=>{let text=($('chatText').value||'').trim();if(!text)return toast('Escribe un mensaje');data.chat.push({name:playerName(true),text});$('chatText').value='';updateLobby()};$('chatText').addEventListener('keydown',e=>{if(e.key==='Enter')$('sendChat').click()});document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>screen('menu'));
+let audioCtx,master,beatTimer,musicOn=false;function initAudio(){if(audioCtx)return;audioCtx=new (window.AudioContext||window.webkitAudioContext)();master=audioCtx.createGain();master.gain.value=+$('vol').value;master.connect(audioCtx.destination)}function tone(f,d=.1,type='sine',g=.05){if(!audioCtx)return;let o=audioCtx.createOscillator(),v=audioCtx.createGain(),t=audioCtx.currentTime;o.type=type;o.frequency.value=f;v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(v);v.connect(master);o.start(t);o.stop(t+d)}function noise(d=.05,g=.05){if(!audioCtx)return;let b=audioCtx.createBuffer(1,audioCtx.sampleRate*d,audioCtx.sampleRate),x=b.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=Math.random()*2-1;let s=audioCtx.createBufferSource(),v=audioCtx.createGain();s.buffer=b;v.gain.value=g;s.connect(v);v.connect(master);s.start()}function musicLoop(){let step=0;clearInterval(beatTimer);beatTimer=setInterval(()=>{if(!musicOn)return;if(step%4===0){tone(72,.11,'sine',.18);noise(.035,.03)}if(step%4===2)noise(.045,.05);tone([330,392,440,523,440,392,330,294][step%8],.085,'square',.03);step++},178)}async function setMusic(on){initAudio();try{await audioCtx.resume()}catch(e){}musicOn=on;if(on){musicLoop();$('musicBtn').textContent='Ⅱ';$('musicState').textContent='ON'}else{clearInterval(beatTimer);$('musicBtn').textContent='▶';$('musicState').textContent='OFF'}}$('musicBtn').onclick=()=>setMusic(!musicOn);$('vol').oninput=()=>{initAudio();master.gain.value=+$('vol').value};window.addEventListener('pointerdown',()=>{if(!musicOn)setMusic(true)},{once:true});setTimeout(()=>setMusic(true),600);function sfx(k){initAudio();audioCtx.resume();if(k==='shoot'){tone(170,.05,'sawtooth',.08);noise(.06,.1)}if(k==='hit')tone(90,.08,'square',.08);if(k==='dead'){tone(70,.16,'sawtooth',.12);setTimeout(()=>tone(45,.18,'sine',.08),80)}if(k==='buy'){tone(880,.08,'sine',.12);setTimeout(()=>tone(1320,.08,'sine',.1),80)}if(k==='boss')tone(45,.5,'sawtooth',.18)}
+const weapons={pistol:{name:'Pistola',ico:'🔫',price:0,dmg:24,rate:260,bullets:1},smg:{name:'SMG Rápida',ico:'🔫',price:900,dmg:15,rate:75,bullets:1},rifle:{name:'Rifle ANT',ico:'🔫',price:1700,dmg:26,rate:120,bullets:1},shotgun:{name:'Escopeta',ico:'💥',price:2800,dmg:19,rate:560,bullets:6},ak:{name:'AK Roja',ico:'🔫',price:4200,dmg:34,rate:155,bullets:1},laser:{name:'Láser Neon',ico:'⚡',price:6500,dmg:42,rate:210,bullets:1},rpg:{name:'RPG',ico:'🚀',price:11000,dmg:120,rate:950,bullets:1},minigun:{name:'Minigun',ico:'🧨',price:15000,dmg:12,rate:45,bullets:1}};function renderShop(){$('shopCoins').textContent=data.coins;$('shopGrid').innerHTML=Object.entries(weapons).map(([id,w])=>{let has=data.unlocked.includes(id),eq=data.weapon===id;return`<div class="item"><div class="ico">${w.ico}</div><h3>${w.name}</h3><p>Daño ${w.dmg} · Cadencia ${w.rate}</p><button onclick="buy('${id}')">${has?(eq?'EQUIPADA':'EQUIPAR'):'COMPRAR $'+w.price}</button></div>`}).join('')}window.buy=id=>{let w=weapons[id];if(data.unlocked.includes(id)){data.weapon=id;toast('Arma equipada: '+w.name);sfx('buy');renderShop();save();return}if(data.coins<w.price)return toast('No tienes monedas suficientes');data.coins-=w.price;data.unlocked.push(id);data.weapon=id;sfx('buy');toast('Compraste '+w.name);renderShop();updateLobby()};$('openShop').onclick=()=>screen('shop');$('openControls').onclick=()=>screen('controls');$('playSolo').onclick=()=>startGame('solo');$('playTeam').onclick=()=>{if(!data.team)return toast('Primero crea o únete a un equipo');startGame('equipo')};
+const canvas=$('c'),ctx=canvas.getContext('2d');let W,H,game,keys={},mouse={x:innerWidth/2,y:innerHeight/2,down:false},raf=0;function resize(){canvas.width=innerWidth;canvas.height=innerHeight;W=innerWidth;H=innerHeight}addEventListener('resize',resize);resize();document.addEventListener('keydown',e=>{if(document.activeElement&&document.activeElement.tagName==='INPUT')return;keys[e.key.toLowerCase()]=true;if(['1','2','3','4'].includes(e.key)){let ids=data.unlocked;data.weapon=ids[Math.min(+e.key-1,ids.length-1)]||data.weapon;renderWeapons()}});document.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);canvas.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});canvas.addEventListener('mousedown',()=>mouse.down=true);canvas.addEventListener('mouseup',()=>mouse.down=false);$('exitGame').onclick=()=>endGame(false);
+function renderWeapons(){$('weaponBar').innerHTML=data.unlocked.map(id=>`<div class="slot ${data.weapon===id?'active':''}" onclick="data.weapon='${id}';renderWeapons()">${weapons[id].ico}<br>${weapons[id].name}</div>`).join('')}function startGame(mode){closeModal();playerName(true);screen('game');renderWeapons();game={mode,player:{x:W/2,y:H/2,hp:100,maxHp:100,r:18,lastShot:0},zombies:[],bossShots:[],bullets:[],particles:[],kills:0,coins:0,wave:1,start:Date.now(),alive:true};spawnWave();cancelAnimationFrame(raf);loop();toast('Partida iniciada')}
+function spawnWave(){let boss=game.wave%3===0;let n=5+game.wave*2;for(let i=0;i<n;i++)spawnZombie(false);if(boss){spawnZombie(true);sfx('boss');toast('👑 JEFE ENTRANDO')}}function spawnZombie(boss){let edge=Math.floor(Math.random()*4),x=edge<2?Math.random()*W:(edge===2?-40:W+40),y=edge>=2?Math.random()*H:(edge===0?-40:H+40);let hp=boss?220+game.wave*38:24+game.wave*4;game.zombies.push({x,y,hp,max:hp,r:boss?32:17,s:boss?.72:1.25+Math.random()*.45,hit:0,boss,lastFire:0})}
+function shoot(){let p=game.player,w=weapons[data.weapon],now=performance.now();if(now-p.lastShot<w.rate)return;p.lastShot=now;sfx('shoot');let a=Math.atan2(mouse.y-p.y,mouse.x-p.x);for(let i=0;i<w.bullets;i++){let spread=(i-(w.bullets-1)/2)*.13;game.bullets.push({x:p.x,y:p.y,vx:Math.cos(a+spread)*13,vy:Math.sin(a+spread)*13,d:w.dmg,life:80,r:data.weapon==='rpg'?8:4})}}
+function update(){if(!game||!game.alive)return;let p=game.player,sp=3.3;if(keys.w||keys.arrowup)p.y-=sp;if(keys.s||keys.arrowdown)p.y+=sp;if(keys.a||keys.arrowleft)p.x-=sp;if(keys.d||keys.arrowright)p.x+=sp;p.x=Math.max(20,Math.min(W-20,p.x));p.y=Math.max(82,Math.min(H-20,p.y));if(mouse.down)shoot();for(let b of game.bullets){b.x+=b.vx;b.y+=b.vy;b.life--}game.bullets=game.bullets.filter(b=>b.life>0&&b.x>-80&&b.y>-80&&b.x<W+80&&b.y<H+80);for(let z of game.zombies){let a=Math.atan2(p.y-z.y,p.x-z.x);z.x+=Math.cos(a)*z.s;z.y+=Math.sin(a)*z.s;z.hit=Math.max(0,z.hit-1);if(z.boss&&performance.now()-z.lastFire>1150){z.lastFire=performance.now();game.bossShots.push({x:z.x,y:z.y,vx:Math.cos(a)*5.2,vy:Math.sin(a)*5.2,life:150})}if(Math.hypot(p.x-z.x,p.y-z.y)<p.r+z.r){let touchDmg=z.boss?Math.min(.22+game.wave*.025,.62):Math.min(.22+game.wave*.008,.38);p.hp-=touchDmg;z.x-=Math.cos(a)*8;z.y-=Math.sin(a)*8;if(Math.random()<.12)sfx('hit');if(p.hp<=0){p.hp=0;endGame(true);return}}}for(let bs of game.bossShots){bs.x+=bs.vx;bs.y+=bs.vy;bs.life--;if(Math.hypot(p.x-bs.x,p.y-bs.y)<p.r+8){let shotDmg=Math.min(4+game.wave*.45,13);p.hp-=shotDmg;bs.life=0;sfx('hit');toast('👑 Disparo del jefe -'+Math.round(shotDmg));if(p.hp<=0){p.hp=0;endGame(true);return}}}game.bossShots=game.bossShots.filter(b=>b.life>0);for(let b of game.bullets)for(let z of game.zombies){if(z.hp>0&&b.life>0&&Math.hypot(b.x-z.x,b.y-z.y)<z.r+b.r){z.hp-=b.d;z.hit=6;b.life=0;game.particles.push({x:z.x,y:z.y,t:18});if(z.hp<=0){game.kills++;let earn=z.boss?Math.min(45+game.wave*3,95):Math.min(6+Math.floor(game.wave/3)*2,18);game.coins+=earn;data.kills++;data.coins+=earn;sfx('dead')}}}game.zombies=game.zombies.filter(z=>z.hp>0);if(game.zombies.length===0){game.wave++;data.bestWave=Math.max(data.bestWave,game.wave);spawnWave();toast('Oleada '+game.wave)}game.particles=game.particles.filter(p=>--p.t>0);updateHud()}
+function updateHud(){let p=game.player;$('hpFill').style.width=Math.max(0,p.hp)+'%';$('hpText').textContent=Math.ceil(p.hp)+'/'+p.maxHp;$('coinsHud').textContent=game.coins;$('killsHud').textContent=game.kills;$('waveHud').textContent=game.wave;$('zHud').textContent=game.zombies.length;$('bossHud').textContent=game.zombies.some(z=>z.boss)?'SÍ':'NO'}
+function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#07070b';ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(255,35,85,.16)';for(let x=0;x<W;x+=52){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(let y=0;y<H;y+=52){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}ctx.fillStyle='rgba(255,40,75,.11)';for(let i=0;i<18;i++)ctx.fillRect((i*173)%W,(i*97)%H,72,30);if(!game)return;for(let b of game.bullets){ctx.fillStyle=data.weapon==='rpg'?'#ffdf66':'#fff';ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,7);ctx.fill()}for(let bs of game.bossShots){ctx.fillStyle='#b862ff';ctx.shadowColor='#b862ff';ctx.shadowBlur=14;ctx.beginPath();ctx.arc(bs.x,bs.y,8,0,7);ctx.fill();ctx.shadowBlur=0}for(let z of game.zombies){ctx.save();ctx.translate(z.x,z.y);ctx.fillStyle=z.hit?'#fff':(z.boss?'#26063b':'#38101b');ctx.strokeStyle=z.boss?'#b862ff':'#ff315d';ctx.lineWidth=z.boss?4:3;ctx.beginPath();ctx.arc(0,0,z.r,0,7);ctx.fill();ctx.stroke();ctx.fillStyle=z.boss?'#b862ff':'#ff315d';ctx.fillRect(-z.r,-z.r-12,(z.r*2)*(z.hp/z.max),5);ctx.fillStyle='#ff4772';ctx.fillRect(-7,-5,4,4);ctx.fillRect(5,-5,4,4);if(z.boss){ctx.fillStyle='#ffdf66';ctx.font='900 12px Inter';ctx.fillText('JEFE',-16,-z.r-18)}ctx.restore()}for(let pp of game.particles){ctx.fillStyle=`rgba(255,0,50,${pp.t/18})`;ctx.beginPath();ctx.arc(pp.x,pp.y,24-pp.t,0,7);ctx.fill()}let p=game.player;ctx.save();ctx.translate(p.x,p.y);let a=Math.atan2(mouse.y-p.y,mouse.x-p.x);ctx.rotate(a);ctx.fillStyle='#151821';ctx.strokeStyle='#ff315d';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,p.r,0,7);ctx.fill();ctx.stroke();ctx.fillStyle='#ddd';ctx.fillRect(12,-4,32,8);ctx.fillStyle='#ff315d';ctx.fillRect(-8,-16,16,6);ctx.restore()}
+function loop(){function frame(){if(game&&game.alive){update();draw();raf=requestAnimationFrame(frame)}}frame()}function endGame(dead){if(!game)return;game.alive=false;cancelAnimationFrame(raf);if(game.kills>0){let old=(data.leaders||[]).find(p=>p.name===data.name);if(old){if(game.kills>old.kills){old.kills=game.kills;toast('🏆 Nuevo récord en el top: '+game.kills)}}else{data.leaders.push({name:data.name,kills:game.kills});toast('🏆 Entraste al top con '+game.kills+' kills')}}save();if(!dead){screen('menu');return}let t=Math.floor((Date.now()-game.start)/1000);$('dKills').textContent=game.kills;$('dCoins').textContent=game.coins;$('dWave').textContent=game.wave;$('dTime').textContent=t+'s';screen('death');updateLobby()}$('again').onclick=()=>startGame(game?.mode||'solo');$('deathMenu').onclick=()=>screen('menu');$('playerName').value=data.name;updateLobby();screen('menu');
+</script>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+// ===== ANTIDOTE ONLINE PATCH: chat global, equipos reales, top mundial =====
+(function(){
+  if(!window.io){ console.warn('Socket.IO no cargó.'); return; }
+  const socket = io();
+  let onlineReady = false;
+  let mySocketId = null;
+  const safeName = () => playerName(false) || data.name || 'Jugador';
+
+  function syncServerState(st){
+    if(!st) return;
+    data.chat = st.chat || [];
+    data.leaders = st.leaders || [];
+    data.teams = st.teams || {};
+    if(data.team && data.team.code){
+      data.team = data.teams[data.team.code] || null;
+    }
+    updateLobby();
+  }
+
+  function sendProfile(){
+    const name = safeName();
+    socket.emit('player:update', { name, coins:data.coins||0, kills:data.kills||0, bestWave:data.bestWave||0 });
+  }
+
+  socket.on('connect', () => {
+    onlineReady = true;
+    mySocketId = socket.id;
+    sendProfile();
+    toast('🌎 Online conectado');
+  });
+  socket.on('state', syncServerState);
+  socket.on('toast', msg => toast(msg));
+  socket.on('team:joined', team => { data.team = team; updateLobby(); toast('👥 Equipo listo: '+team.code); });
+  socket.on('team:closed', msg => { data.team = null; updateLobby(); toast(msg || 'El equipo fue cerrado'); });
+  socket.on('profile:locked', name => { data.name = name; data.nameLocked = true; $('playerName').value = name; $('playerName').disabled = true; save(); updateLobby(); });
+
+  // Crear equipo REAL en el servidor
+  $('createTeam').onclick = () => {
+    playerName(true); sendProfile();
+    modal(`<h2>CREAR EQUIPO</h2><p>Elige el modo de la partida. El servidor crea un código para tus amigos.</p><div class="modeBtns"><button id="mkSolo">SOLO</button><button id="mkDuo">DUO</button><button id="mkSquad">ESCUADRA</button></div><p style="font-size:12px;color:#aaa">Si el líder sale, el equipo se cierra para todos.</p>`);
+    setTimeout(()=>{
+      const make = (mode)=> socket.emit('team:create', { mode, name:safeName() });
+      $('mkSolo') && ($('mkSolo').onclick = ()=>make('SOLO'));
+      $('mkDuo') && ($('mkDuo').onclick = ()=>make('DUO'));
+      $('mkSquad') && ($('mkSquad').onclick = ()=>make('ESCUADRA'));
+    },0);
+  };
+
+  // Unirse a equipo REAL por código
+  $('joinTeam').onclick = () => {
+    playerName(true); sendProfile();
+    modal(`<h2>UNIRSE</h2><p>Pon el código del equipo.</p><input id="joinCodeOnline" class="codeInput" placeholder="ABC123" maxlength="8"><button id="joinConfirmOnline" style="width:100%;margin-top:12px">UNIRSE</button><p style="font-size:12px;color:#aaa">Los códigos funcionan para todos los que estén en esta misma web.</p>`);
+    setTimeout(()=>{
+      const input = $('joinCodeOnline');
+      const btn = $('joinConfirmOnline');
+      if(input) input.focus();
+      if(btn) btn.onclick = ()=>{
+        const code = (input.value||'').trim().toUpperCase();
+        if(!code) return toast('Escribe el código');
+        socket.emit('team:join', { code, name:safeName() });
+      };
+    },0);
+  };
+
+  $('leaveTeam').onclick = () => {
+    if(!data.team || !data.team.code) return toast('No estás en equipo');
+    socket.emit('team:leave', { code:data.team.code, name:safeName() });
+  };
+
+  // Chat REAL: todos lo ven
+  $('sendChat').onclick = () => {
+    const input = $('chatText');
+    const text = (input.value||'').trim();
+    if(!text) return toast('Escribe un mensaje');
+    socket.emit('chat:send', { name:safeName(), text });
+    input.value = '';
+    input.focus();
+  };
+  $('chatText').addEventListener('keydown', e => {
+    if(e.key === 'Enter') { e.preventDefault(); $('sendChat').click(); }
+  });
+
+  // Al terminar partida, manda tu récord al top mundial. Solo sube si superas tu récord.
+  const oldEndGame = endGame;
+  endGame = function(dead){
+    const finished = game ? { kills:game.kills||0, coins:game.coins||0, wave:game.wave||1 } : null;
+    oldEndGame(dead);
+    if(finished && finished.kills > 0){
+      socket.emit('score:submit', { name:safeName(), kills:finished.kills, coins:finished.coins, wave:finished.wave });
+      socket.emit('player:update', { name:safeName(), coins:data.coins||0, kills:data.kills||0, bestWave:data.bestWave||0 });
+    }
+  };
+
+  // Mantener nombre sincronizado. Solo se bloquea una vez cuando le das jugar/crear/unirse.
+  $('playerName').addEventListener('change', ()=>{ if(!data.nameLocked){ data.name = $('playerName').value.trim() || data.name; save(); sendProfile(); }});
+
+  // Mensaje visual de online en el panel
+  const badge=document.createElement('div');
+  badge.className='row'; badge.innerHTML='<span>🌎 Estado online</span><b id="onlineState">Conectando...</b>';
+  const leftPanel=document.querySelector('#lobbyPanels aside.panel');
+  if(leftPanel) leftPanel.insertBefore(badge,leftPanel.firstChild);
+  socket.on('connect',()=>{ const e=$('onlineState'); if(e)e.textContent='Activo'; });
+  socket.on('disconnect',()=>{ const e=$('onlineState'); if(e)e.textContent='Desconectado'; toast('⚠️ Se perdió conexión online'); });
+})();
+</script>
+
+</body>
+</html>
