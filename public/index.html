@@ -83,7 +83,7 @@ function loop(){function frame(){if(game&&game.alive){update();draw();raf=reques
   });
   socket.on('state', syncServerState);
   socket.on('toast', msg => toast(msg));
-  socket.on('team:joined', team => { data.team = team; updateLobby(); toast('👥 Equipo listo: '+team.code); });
+  socket.on('team:joined', team => { data.team = team; closeModal(); updateLobby(); toast('👥 Equipo listo: '+team.code); });
   socket.on('team:closed', msg => { data.team = null; updateLobby(); toast(msg || 'El equipo fue cerrado'); });
   socket.on('profile:locked', name => { data.name = name; data.nameLocked = true; $('playerName').value = name; $('playerName').disabled = true; save(); updateLobby(); });
 
@@ -132,6 +132,28 @@ function loop(){function frame(){if(game&&game.alive){update();draw();raf=reques
   };
   $('chatText').addEventListener('keydown', e => {
     if(e.key === 'Enter') { e.preventDefault(); $('sendChat').click(); }
+  });
+
+
+  // Iniciar partida en equipo REAL: solo el líder inicia y TODOS entran juntos.
+  if($('playTeam')){
+    $('playTeam').onclick = () => {
+      const name = playerName(true);
+      if(!name) return;
+      sendProfile();
+      if(!data.team || !data.team.code) return toast('Primero crea o únete a un equipo');
+      const isLeader = (data.team.leader === name);
+      if(!isLeader) return toast('Espera que el líder inicie la partida');
+      socket.emit('team:start', { code:data.team.code, name });
+      toast('Iniciando partida para el equipo...');
+    };
+  }
+
+  socket.on('match:start', payload => {
+    if(payload && payload.code && data.teams[payload.code]) data.team = data.teams[payload.code];
+    closeModal();
+    toast('🚀 La escuadra entró a la partida');
+    startGame('equipo');
   });
 
   // Al terminar partida, manda tu récord al top mundial. Solo sube si superas tu récord.

@@ -24,7 +24,7 @@ function saveData(){ fs.writeFileSync(DATA_FILE, JSON.stringify(db, null, 2)); }
 function publicTeams(){
   const out = {};
   for(const [code,t] of Object.entries(db.teams)){
-    out[code] = { code:t.code, mode:t.mode, leader:t.leader, max:t.max, members:t.members || [] };
+    out[code] = { code:t.code, mode:t.mode, leader:t.leader, max:t.max, started: !!t.started, members:(t.members || []).map(m => m.name || String(m)) };
   }
   return out;
 }
@@ -88,6 +88,18 @@ io.on('connection', socket => {
     if(!team.members.some(m=>m.socketId===socket.id)) team.members.push({name, socketId:socket.id});
     socket.join(code);
     io.to(code).emit('team:joined', publicTeams()[code]);
+    emitState();
+  });
+
+
+  socket.on('team:start', ({code}) => {
+    code = String(code||'').trim().toUpperCase();
+    const team = db.teams[code];
+    if(!team) return socket.emit('toast', 'Ese equipo ya no existe');
+    if(team.leaderSocket !== socket.id) return socket.emit('toast', 'Solo el líder puede iniciar la partida');
+    if((team.members||[]).length < 1) return socket.emit('toast', 'No hay jugadores en el equipo');
+    team.started = true;
+    io.to(code).emit('match:start', { code, mode: team.mode, leader: team.leader, members: (team.members||[]).map(m => m.name) });
     emitState();
   });
 
