@@ -222,5 +222,160 @@ function loop(){function frame(){if(game&&game.alive){update();draw();raf=reques
 })();
 </script>
 
+
+<script>
+// ===== ANTIDOTE SHARED MATCH PATCH: partida realmente compartida por servidor =====
+(function(){
+  let sharedState=null;
+  let lastSharedInput=0;
+  const oldStartGame=startGame;
+  const oldUpdate=update;
+  const oldDraw=draw;
+  const oldEndGame=endGame;
+
+  startGame=function(mode,matchData=null){
+    oldStartGame(mode,matchData);
+    if(matchData && matchData.matchId){
+      game.shared=true;
+      game.match=matchData;
+      game.zombies=[];
+      game.bullets=[];
+      game.bossShots=[];
+      game.remotePlayers={};
+      game.player.x=W/2;
+      game.player.y=H/2;
+      toast('🌎 Partida compartida activa');
+    }
+  };
+
+  function getMeFromState(){
+    if(!sharedState||!window.socket) return null;
+    return (sharedState.players||[]).find(p=>p.id===socket.id)||null;
+  }
+
+  function updateShared(){
+    if(!game||!game.alive||!game.shared) return;
+    const p=game.player;
+    const sp=3.3;
+    if(keys.w||keys.arrowup)p.y-=sp;
+    if(keys.s||keys.arrowdown)p.y+=sp;
+    if(keys.a||keys.arrowleft)p.x-=sp;
+    if(keys.d||keys.arrowright)p.x+=sp;
+    p.x=Math.max(20,Math.min(W-20,p.x));
+    p.y=Math.max(82,Math.min(H-20,p.y));
+
+    const now=performance.now();
+    if(window.socket && now-lastSharedInput>33){
+      lastSharedInput=now;
+      socket.emit('match:input',{
+        matchId:game.match.matchId,
+        teamCode:game.match.teamCode,
+        x:p.x/W,
+        y:p.y/H,
+        aimX:mouse.x/W,
+        aimY:mouse.y/H,
+        shooting:!!mouse.down,
+        weapon:data.weapon
+      });
+      if(mouse.down && Math.random()<.35) sfx('shoot');
+    }
+
+    if(sharedState){
+      const me=getMeFromState();
+      if(me){
+        game.player.hp=Math.max(0,Number(me.hp||0));
+        game.kills=Number(me.kills||0);
+        game.coins=Number(me.coins||0);
+        if(game.player.hp<=0){ endGame(true); return; }
+      }
+      game.wave=sharedState.wave||game.wave;
+      game.zombies=(sharedState.zombies||[]).map(z=>({
+        id:z.id,x:z.x*W,y:z.y*H,hp:z.hp,max:z.max,boss:z.boss,r:(z.r||.017)*Math.min(W,H)
+      }));
+    }
+    updateHud();
+  }
+
+  function drawShared(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#07070b';ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,35,85,.16)';
+    for(let x=0;x<W;x+=52){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+    for(let y=0;y<H;y+=52){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+    ctx.fillStyle='rgba(255,40,75,.11)';
+    for(let i=0;i<18;i++)ctx.fillRect((i*173)%W,(i*97)%H,72,30);
+    if(!game) return;
+
+    const st=sharedState||{};
+    // Balas compartidas
+    for(const b of (st.bullets||[])){
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(b.x*W,b.y*H,Math.max(4,(b.r||.005)*Math.min(W,H)),0,7);ctx.fill();
+    }
+    for(const b of (st.bossShots||[])){
+      ctx.fillStyle='#b862ff';ctx.shadowColor='#b862ff';ctx.shadowBlur=14;ctx.beginPath();ctx.arc(b.x*W,b.y*H,8,0,7);ctx.fill();ctx.shadowBlur=0;
+    }
+
+    // Zombies compartidos
+    for(const z of (st.zombies||[])){
+      const zx=z.x*W, zy=z.y*H, zr=(z.r||.017)*Math.min(W,H);
+      ctx.save();ctx.translate(zx,zy);
+      ctx.fillStyle=z.boss?'#26063b':'#38101b';ctx.strokeStyle=z.boss?'#b862ff':'#ff315d';ctx.lineWidth=z.boss?4:3;
+      ctx.beginPath();ctx.arc(0,0,zr,0,7);ctx.fill();ctx.stroke();
+      ctx.fillStyle=z.boss?'#b862ff':'#ff315d';ctx.fillRect(-zr,-zr-12,(zr*2)*Math.max(0,(z.hp||0)/(z.max||1)),5);
+      ctx.fillStyle='#ff4772';ctx.fillRect(-7,-5,4,4);ctx.fillRect(5,-5,4,4);
+      if(z.boss){ctx.fillStyle='#ffdf66';ctx.font='900 12px Inter';ctx.textAlign='center';ctx.fillText('JEFE',0,-zr-18)}
+      ctx.restore();
+    }
+
+    // Jugadores compartidos
+    for(const rp of (st.players||[])){
+      const isMe=window.socket && rp.id===socket.id;
+      const x=isMe?game.player.x:rp.x*W, y=isMe?game.player.y:rp.y*H;
+      ctx.save();ctx.translate(x,y);
+      const a=Math.atan2(mouse.y-y,mouse.x-x);
+      ctx.rotate(isMe?a:0);
+      ctx.fillStyle=isMe?'#151821':'#102a35';ctx.strokeStyle=isMe?'#ff315d':'#36e7ff';ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(0,0,18,0,7);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#ddd';ctx.fillRect(12,-4,32,8);
+      ctx.restore();
+      ctx.fillStyle=isMe?'#ffdf66':'#36e7ff';ctx.font='900 12px Inter';ctx.textAlign='center';ctx.fillText((rp.name||'Jugador')+(isMe?' (TÚ)':''),x,y-31);
+      ctx.fillStyle='#111';ctx.fillRect(x-18,y-25,36,5);ctx.fillStyle=isMe?'#ff315d':'#36e7ff';ctx.fillRect(x-18,y-25,36*Math.max(0,(rp.hp||0)/100),5);
+    }
+  }
+
+  update=function(){
+    if(game&&game.shared) return updateShared();
+    return oldUpdate();
+  };
+  draw=function(){
+    if(game&&game.shared) return drawShared();
+    return oldDraw();
+  };
+  endGame=function(dead){
+    if(game&&game.shared&&dead){
+      const me=getMeFromState();
+      if(me){ game.kills=me.kills||0; game.coins=me.coins||0; }
+    }
+    return oldEndGame(dead);
+  };
+
+  function bindSharedSocket(){
+    if(!window.socket) return setTimeout(bindSharedSocket,200);
+    socket.on('match:state', st=>{
+      if(!game || !game.shared || !game.match || st.matchId!==game.match.matchId) { sharedState=st; return; }
+      sharedState=st;
+      const me=getMeFromState();
+      if(me){
+        game.kills=me.kills||0;
+        game.coins=me.coins||0;
+        game.wave=st.wave||game.wave;
+        game.player.hp=Math.max(0,me.hp||0);
+      }
+    });
+  }
+  bindSharedSocket();
+})();
+</script>
+
 </body>
 </html>
