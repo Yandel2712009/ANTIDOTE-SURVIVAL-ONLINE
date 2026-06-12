@@ -22,14 +22,14 @@ db.teams ||= {};
 const matches = {};
 
 const weapons = {
-  pistol:{name:'Pistola',dmg:24,rate:260,bullets:1,speed:.022},
-  smg:{name:'SMG',dmg:15,rate:80,bullets:1,speed:.023},
-  rifle:{name:'Rifle',dmg:28,rate:135,bullets:1,speed:.024},
-  shotgun:{name:'Escopeta',dmg:18,rate:560,bullets:6,speed:.021,spread:.16},
-  ak:{name:'AK Roja',dmg:34,rate:155,bullets:1,speed:.024},
-  laser:{name:'Láser',dmg:42,rate:210,bullets:1,speed:.027},
-  rpg:{name:'RPG',dmg:120,rate:950,bullets:1,speed:.016,r:.012},
-  minigun:{name:'Minigun',dmg:12,rate:48,bullets:1,speed:.025}
+  pistol:{name:'Pistola',dmg:24,rate:230,bullets:1,speed:.044},
+  smg:{name:'SMG',dmg:15,rate:70,bullets:1,speed:.046},
+  rifle:{name:'Rifle',dmg:28,rate:120,bullets:1,speed:.048},
+  shotgun:{name:'Escopeta',dmg:18,rate:500,bullets:6,speed:.043,spread:.16},
+  ak:{name:'AK Roja',dmg:34,rate:135,bullets:1,speed:.048},
+  laser:{name:'Láser',dmg:42,rate:190,bullets:1,speed:.052},
+  rpg:{name:'RPG',dmg:120,rate:850,bullets:1,speed:.032,r:.012},
+  minigun:{name:'Minigun',dmg:12,rate:42,bullets:1,speed:.050}
 };
 function save(){ try{ fs.writeFileSync(DATA_FILE, JSON.stringify(db, null, 2)); }catch(e){} }
 function cleanName(v){ return String(v||'Jugador').replace(/[<>]/g,'').trim().slice(0,14) || 'Jugador'; }
@@ -72,7 +72,7 @@ function spawnZombie(match,boss=false){
   const x=edge<2?r():(edge===2?-.06:1.06);
   const y=edge>=2?r():(edge===0?-.06:1.06);
   const hp=boss?240+match.wave*45:28+match.wave*5;
-  match.zombies.push({id:'z'+(match.nextZ++),x,y,hp,max:hp,boss,r:boss?.033:.018,s:boss?.00085:(.0014+r()*.00055),lastFire:0});
+  match.zombies.push({id:'z'+(match.nextZ++),x,y,hp,max:hp,boss,r:boss?.033:.018,s:boss?.00115:(.00185+r()*.00065),lastFire:0});
 }
 function spawnWave(match){
   match.zombies=[]; match.bossShots=[]; match.bullets=[];
@@ -124,7 +124,7 @@ function tick(match){
     z.x+=Math.cos(a)*z.s; z.y+=Math.sin(a)*z.s;
     if(z.boss && Date.now()-(z.lastFire||0)>1250){
       z.lastFire=Date.now();
-      match.bossShots.push({id:'bs'+(match.nextShot++),x:z.x,y:z.y,vx:Math.cos(a)*.0065,vy:Math.sin(a)*.0065,life:155});
+      match.bossShots.push({id:'bs'+(match.nextShot++),x:z.x,y:z.y,vx:Math.cos(a)*.011,vy:Math.sin(a)*.011,life:155});
     }
     if(best<z.r+.022){
       const dmg=z.boss?Math.min(.18+match.wave*.018,.45):Math.min(.12+match.wave*.006,.28);
@@ -262,5 +262,5 @@ setInterval(()=>{
     tick(match);
     io.to(match.teamCode).emit('match:state', compact(match));
   }
-}, 50);
+}, 33);
 server.listen(PORT, ()=>console.log(`ANTIDOTE SURVIVAL ONLINE listo en http://localhost:${PORT}`));
