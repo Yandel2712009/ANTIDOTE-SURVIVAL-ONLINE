@@ -72,7 +72,7 @@ function spawnZombie(match,boss=false){
   const x=edge<2?r():(edge===2?-.06:1.06);
   const y=edge>=2?r():(edge===0?-.06:1.06);
   const hp=boss?240+match.wave*45:28+match.wave*5;
-  match.zombies.push({id:'z'+(match.nextZ++),x,y,hp,max:hp,boss,r:boss?.033:.018,s:boss?.00115:(.00185+r()*.00065),lastFire:0});
+  match.zombies.push({id:'z'+(match.nextZ++),x,y,hp,max:hp,boss,r:boss?.033:.018,s:boss?.00115:(.00225+r()*.00075),lastFire:0});
 }
 function spawnWave(match){
   match.zombies=[]; match.bossShots=[]; match.bullets=[];
@@ -127,7 +127,7 @@ function tick(match){
       match.bossShots.push({id:'bs'+(match.nextShot++),x:z.x,y:z.y,vx:Math.cos(a)*.011,vy:Math.sin(a)*.011,life:155});
     }
     if(best<z.r+.022){
-      const dmg=z.boss?Math.min(.18+match.wave*.018,.45):Math.min(.12+match.wave*.006,.28);
+      const dmg=z.boss?Math.min(.22+match.wave*.020,.55):Math.min(.24+match.wave*.010,.42);
       target.hp-=dmg;
       z.x-=Math.cos(a)*.01; z.y-=Math.sin(a)*.01;
       if(target.hp<=0){ target.hp=0; target.alive=false; submitScore(target.name,target.kills,target.coins,match.wave); }
@@ -137,7 +137,7 @@ function tick(match){
     s.x+=s.vx; s.y+=s.vy; s.life--;
     for(const p of alive){
       if(p.alive && Math.hypot(p.x-s.x,p.y-s.y)<.026){
-        const dmg=Math.min(3.5+match.wave*.35,10);
+        const dmg=Math.min(4.5+match.wave*.40,12);
         p.hp-=dmg; s.life=0;
         if(p.hp<=0){ p.hp=0; p.alive=false; submitScore(p.name,p.kills,p.coins,match.wave); }
       }
