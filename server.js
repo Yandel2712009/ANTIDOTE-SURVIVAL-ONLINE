@@ -32,6 +32,12 @@ function state(){ return { leaders: db.leaders.slice(0,10), chat: db.chat.slice(
 function emitState(){ io.emit('state', state()); saveData(); }
 function cleanName(name){ return String(name||'Jugador').replace(/[<>]/g,'').trim().slice(0,14) || 'Jugador'; }
 function cleanText(text){ return String(text||'').replace(/[<>]/g,'').trim().slice(0,120); }
+function findTeamBySocket(socketId){
+  for(const [code,t] of Object.entries(db.teams)){
+    if((t.members||[]).some(m=>m.socketId===socketId)) return {code,t};
+  }
+  return null;
+}
 function makeCode(){
   const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code='';
@@ -64,23 +70,23 @@ io.on('connection', socket => {
 
   socket.on('team:create', ({mode}) => {
     const name = cleanName(socket.data.name);
+    const current = findTeamBySocket(socket.id);
+    if(current) return socket.emit('toast', 'Ya estás en un equipo. Sal primero para crear otro.');
     mode = ['SOLO','DUO','ESCUADRA'].includes(mode) ? mode : 'DUO';
     const max = mode === 'SOLO' ? 1 : (mode === 'DUO' ? 2 : 4);
-    // Si ya era líder de otro equipo, cerrarlo.
-    for(const [code,t] of Object.entries(db.teams)){
-      if(t.leaderSocket === socket.id) delete db.teams[code];
-      else t.members = (t.members||[]).filter(m => m.socketId !== socket.id);
-    }
     const code = makeCode();
     const team = { code, mode, max, leader:name, leaderSocket:socket.id, members:[{name, socketId:socket.id}] };
     db.teams[code] = team;
     socket.join(code);
     socket.emit('team:joined', publicTeams()[code]);
+    socket.emit('toast', 'Equipo creado. Código: '+code);
     emitState();
   });
 
   socket.on('team:join', ({code}) => {
     code = String(code||'').trim().toUpperCase();
+    const current = findTeamBySocket(socket.id);
+    if(current && current.code !== code) return socket.emit('toast', 'Ya estás en un equipo. Sal primero para unirte a otro.');
     const team = db.teams[code];
     const name = cleanName(socket.data.name);
     if(!team) return socket.emit('toast', 'Ese código no existe');

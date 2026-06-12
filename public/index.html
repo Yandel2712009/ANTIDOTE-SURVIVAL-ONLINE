@@ -18,7 +18,7 @@
 <body>
 <div id="bg"></div><div class="block b1"></div><div class="block b2"></div><div class="block b3"></div><div class="block b4"></div><div class="block b5"></div>
 <div class="music"><button id="musicBtn">▶</button><b>🎵 Música Tap Tap</b><input id="vol" type="range" min="0" max="1" step="0.01" value="0.55"><small id="musicState">OFF</small></div><div id="toast" class="toast"></div>
-<div id="lobbyPanels" class="columns"><aside class="panel"><h3>PROGRESO</h3><div class="row"><span>💰 Monedas</span><b id="pCoins">0</b></div><div class="row"><span>☠️ Kills totales</span><b id="pKills">0</b></div><div class="row"><span>🏆 Mejor oleada</span><b id="pWave">0</b></div><hr style="border-color:rgba(255,255,255,.12)"><h3>EQUIPO</h3><button id="createTeam" style="width:100%">CREAR EQUIPO</button><button id="joinTeam" class="secondary" style="width:100%;margin-top:10px">UNIRSE CON CÓDIGO</button><button id="leaveTeam" class="secondary small hidden" style="width:100%;margin-top:10px">SALIR DEL EQUIPO</button><div id="teamInfo" class="teamBox">No estás en equipo.</div><div id="teamMembers"></div></aside><main></main><aside class="panel"><h3>TOP JUGADORES</h3><div id="leaders"></div><hr style="border-color:rgba(255,255,255,.12)"><h3>CHAT GLOBAL</h3><div id="chatList" class="chatList"></div><div class="chatInput"><input id="chatText" maxlength="80" placeholder="Escribe aquí..."><button id="sendChat">ENVIAR</button></div></aside></div>
+<div id="lobbyPanels" class="columns"><aside class="panel"><h3>PROGRESO</h3><div class="row"><span>💰 Monedas</span><b id="pCoins">0</b></div><div class="row"><span>☠️ Kills totales</span><b id="pKills">0</b></div><div class="row"><span>🏆 Mejor oleada</span><b id="pWave">0</b></div><hr style="border-color:rgba(255,255,255,.12)"><h3>EQUIPO</h3><button id="createTeam" style="width:100%">CREAR EQUIPO</button><button id="joinTeam" class="secondary" style="width:100%;margin-top:10px">UNIRSE CON CÓDIGO</button><button id="leaveTeam" class="secondary small hidden" style="width:100%;margin-top:10px">SALIR DEL EQUIPO</button><button id="startTeam" class="small hidden" style="width:100%;margin-top:10px">🚀 INICIAR PARTIDA</button><div id="teamInfo" class="teamBox">No estás en equipo.</div><div id="teamMembers"></div></aside><main></main><aside class="panel"><h3>TOP JUGADORES</h3><div id="leaders"></div><hr style="border-color:rgba(255,255,255,.12)"><h3>CHAT GLOBAL</h3><div id="chatList" class="chatList"></div><div class="chatInput"><input id="chatText" maxlength="80" placeholder="Escribe aquí..."><button id="sendChat">ENVIAR</button></div></aside></div>
 <section id="menu" class="screen"><div class="card"><div class="logo">ANTIDOTE<span>SURVIVAL</span></div><p class="sub">Sobrevive oleadas, compra armas, arma tu escuadra y derrota jefes que disparan.</p><input class="nameInput" id="playerName" maxlength="14" placeholder="Tu nombre"><div class="stack"><button id="playSolo">JUGAR SOLO</button><button id="playTeam" class="secondary">JUGAR CON EQUIPO</button><button id="openShop" class="secondary">🛒 VER TIENDA</button><button id="openControls" class="secondary">CONTROLES</button></div></div></section>
 <section id="shop" class="screen hidden"><div class="card" style="width:min(980px,94vw);position:relative"><button class="small secondary backBtn" data-back>VOLVER</button><h2 style="font-family:Black Ops One;color:#ff2b62;font-size:42px;margin:0 0 15px">🛒 TIENDA DE ARMAS</h2><div class="row" style="max-width:260px;margin:0 auto 20px"><span>💰 Tus monedas</span><b id="shopCoins">0</b></div><div id="shopGrid" class="shopGrid"></div></div></section>
 <section id="controls" class="screen hidden"><div class="card"><button class="small secondary backBtn" data-back>VOLVER</button><h2 style="font-family:Black Ops One;color:#ff2b62;font-size:40px">CONTROLES</h2><p>💻 PC: WASD para moverte · Mouse para apuntar · Click para disparar · 1/2/3/4 para cambiar armas.</p><p>📱 Móvil: usa los botones táctiles y dispara con el botón rojo. Crea equipo, invita con código y juega partidas con tu escuadra.</p></div></section>
@@ -27,9 +27,9 @@
 <script>
 const $=id=>document.getElementById(id);const screens=['menu','shop','controls','game','death'];function screen(id){screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));$('lobbyPanels').classList.toggle('hidden',id==='game'||id==='death');if(id==='shop')renderShop();updateLobby()}function toast(t){let d=document.createElement('div');d.textContent=t;$('toast').appendChild(d);setTimeout(()=>d.remove(),2600)}
 let data=JSON.parse(localStorage.getItem('antidote_survival_v8')||'{}');data.coins??=2200;data.kills??=0;data.bestWave??=0;data.name??='';data.unlocked??=['pistol'];data.weapon??='pistol';data.leaders??=[];data.chat??=[{name:'Sistema',text:'Bienvenido al chat global de ANTIDOTE.'}];data.team??=null;data.nameLocked??=false;data.teams??={};function save(){localStorage.setItem('antidote_survival_v8',JSON.stringify(data))}function isAutoName(n){return /^Jugador\d+$/i.test(String(n||'').trim())}if(!data.name||isAutoName(data.name)){data.name='';data.nameLocked=false;save()}function cleanName(v){return String(v||'').trim().replace(/[^a-zA-Z0-9_ÁÉÍÓÚáéíóúñÑ ]/g,'').slice(0,14)}function playerName(lock=false){let inp=$('playerName');if(data.nameLocked&&data.name&&!isAutoName(data.name)){if(inp){inp.value=data.name;inp.disabled=true}return data.name}let v=cleanName(inp?inp.value:data.name);if(!v){if(inp){inp.value='';inp.disabled=false;inp.placeholder='Escribe tu nombre'}if(lock)toast('Primero escribe tu nombre para guardarlo.');return null}data.name=v;if(inp){inp.value=v;inp.disabled=false}if(lock){data.nameLocked=true;if(inp)inp.disabled=true;toast('Nombre guardado: '+v)}save();return v}
-function updateLobby(){playerName(false);$('pCoins').textContent=data.coins;$('pKills').textContent=data.kills;$('pWave').textContent=data.bestWave;$('leaveTeam').classList.toggle('hidden',!data.team);if(data.team){let t=data.teams[data.team.code]||data.team;data.team=t;$('teamInfo').innerHTML=`Equipo <b>${t.mode}</b><br>Código: <b>${t.code}</b><br>Líder: <b>${t.leader||t.members?.[0]||data.name}</b>`;$('teamMembers').innerHTML=(t.members||[]).map(m=>`<div class="member"><span>${m===(t.leader||t.members[0])?'👑':'👤'} ${m}</span><b>${m===data.name?'TÚ':'LISTO'}</b></div>`).join('')}else{$('teamInfo').textContent='No estás en equipo.';$('teamMembers').innerHTML=''}let map={};(data.leaders||[]).forEach(p=>{if(p.kills>0){map[p.name]=Math.max(map[p.name]||0,p.kills)}});if(data.kills>0)map[data.name]=Math.max(map[data.name]||0,data.kills);let board=Object.entries(map).map(([name,kills])=>({name,kills})).sort((a,b)=>b.kills-a.kills).slice(0,6);$('leaders').innerHTML=board.length?board.map((p,i)=>`<div class="leader"><span>#${i+1} ${p.name}</span><b>${p.kills}</b></div>`).join(''):'<div class="chatMsg"><b>Sistema</b>: juega una partida para aparecer aquí.</div>';$('chatList').innerHTML=data.chat.slice(-20).map(m=>`<div class="chatMsg"><b>${m.name}</b>: ${String(m.text).replace(/[<>]/g,'')}</div>`).join('');$('chatList').scrollTop=999999;save()}
+function updateLobby(){playerName(false);$('pCoins').textContent=data.coins;$('pKills').textContent=data.kills;$('pWave').textContent=data.bestWave;$('leaveTeam').classList.toggle('hidden',!data.team);let canStart=false;if(data.team){let t=data.teams[data.team.code]||data.team;data.team=t;let leader=t.leader||t.members?.[0]||data.name;canStart=(leader===data.name);$('teamInfo').innerHTML=`Equipo <b>${t.mode}</b><br>Código: <b>${t.code}</b><br>Líder: <b>${leader}</b>${canStart?'<br><span style="color:#ffdf6b">Tú eres líder: puedes iniciar.</span>':'<br><span>Esperando al líder para iniciar.</span>'}`;$('teamMembers').innerHTML=(t.members||[]).map(m=>`<div class="member"><span>${m===leader?'👑':'👤'} ${m}</span><b>${m===data.name?'TÚ':'LISTO'}</b></div>`).join('')}else{$('teamInfo').textContent='No estás en equipo.';$('teamMembers').innerHTML=''}if($('startTeam'))$('startTeam').classList.toggle('hidden',!canStart);let map={};(data.leaders||[]).forEach(p=>{if(p.kills>0){map[p.name]=Math.max(map[p.name]||0,p.kills)}});if(data.kills>0)map[data.name]=Math.max(map[data.name]||0,data.kills);let board=Object.entries(map).map(([name,kills])=>({name,kills})).sort((a,b)=>b.kills-a.kills).slice(0,6);$('leaders').innerHTML=board.length?board.map((p,i)=>`<div class="leader"><span>#${i+1} ${p.name}</span><b>${p.kills}</b></div>`).join(''):'<div class="chatMsg"><b>Sistema</b>: juega una partida para aparecer aquí.</div>';$('chatList').innerHTML=data.chat.slice(-20).map(m=>`<div class="chatMsg"><b>${m.name}</b>: ${String(m.text).replace(/[<>]/g,'')}</div>`).join('');$('chatList').scrollTop=999999;save()}
 function closeModal(){document.querySelectorAll('.modal').forEach(m=>m.remove())}function modal(html){closeModal();let m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="modalBox"><button class="close" onclick="closeModal()">X</button>${html}</div>`;document.body.appendChild(m);return m}
-$('createTeam').onclick=()=>modal(`<h2>CREAR EQUIPO</h2><p>Elige modo y crea un código para tus amigos.</p><div class="modeBtns"><button data-mode="SOLO">SOLO</button><button data-mode="DUO">DUO</button><button data-mode="ESCUADRA">ESCUADRA</button></div>`);
+$('createTeam').onclick=()=>{if(data.team)return toast('Ya estás en un equipo. Sal primero para crear otro.');modal(`<h2>CREAR EQUIPO</h2><p>Elige modo y crea un código para tus amigos.</p><div class="modeBtns"><button data-mode="SOLO">SOLO</button><button data-mode="DUO">DUO</button><button data-mode="ESCUADRA">ESCUADRA</button></div>`)};
 document.addEventListener('click',e=>{let m=e.target.closest('[data-mode]');if(!m)return;makeTeam(m.dataset.mode)});
 window.makeTeam=mode=>{let name=playerName(true);if(!name)return;let code=Math.random().toString(36).slice(2,8).toUpperCase();let team={mode,code,leader:name,members:[name],max:mode==='SOLO'?1:(mode==='DUO'?2:4)};data.teams[code]=team;data.team=team;toast('Equipo creado: '+code);closeModal();updateLobby()};
 $('joinTeam').onclick=()=>modal(`<h2>UNIRSE</h2><p>Pon el código del equipo.</p><input id="joinCode" class="codeInput" placeholder="ABC123" maxlength="8"><button id="joinConfirm" style="width:100%;margin-top:12px">UNIRSE</button><p style="font-size:12px;color:#aaa">El líder comparte este código. Si el líder sale, el equipo se cierra.</p>`);
@@ -83,12 +83,13 @@ function loop(){function frame(){if(game&&game.alive){update();draw();raf=reques
   });
   socket.on('state', syncServerState);
   socket.on('toast', msg => toast(msg));
-  socket.on('team:joined', team => { data.team = team; closeModal(); updateLobby(); toast('👥 Equipo listo: '+team.code); });
+  socket.on('team:joined', team => { data.teams = data.teams || {}; if(team&&team.code)data.teams[team.code]=team; data.team = team; closeModal(); updateLobby(); toast('👥 Equipo listo: '+team.code); });
   socket.on('team:closed', msg => { data.team = null; updateLobby(); toast(msg || 'El equipo fue cerrado'); });
   socket.on('profile:locked', name => { data.name = name; data.nameLocked = true; $('playerName').value = name; $('playerName').disabled = true; save(); updateLobby(); });
 
   // Crear equipo REAL en el servidor
   $('createTeam').onclick = () => {
+    if(data.team) return toast('Ya estás en un equipo. Sal primero para crear otro.');
     const nm=playerName(true); if(!nm)return; sendProfile();
     modal(`<h2>CREAR EQUIPO</h2><p>Elige el modo de la partida. El servidor crea un código para tus amigos.</p><div class="modeBtns"><button id="mkSolo">SOLO</button><button id="mkDuo">DUO</button><button id="mkSquad">ESCUADRA</button></div><p style="font-size:12px;color:#aaa">Si el líder sale, el equipo se cierra para todos.</p>`);
     setTimeout(()=>{
@@ -135,17 +136,23 @@ function loop(){function frame(){if(game&&game.alive){update();draw();raf=reques
   });
 
 
+
+  function startTeamFromPanel(){
+    const name = playerName(true);
+    if(!name) return;
+    sendProfile();
+    if(!data.team || !data.team.code) return toast('Primero crea o únete a un equipo');
+    const isLeader = (data.team.leader === name);
+    if(!isLeader) return toast('Solo el líder puede iniciar la partida');
+    socket.emit('team:start', { code:data.team.code, name });
+    toast('Iniciando partida para todo el equipo...');
+  }
+  if($('startTeam')) $('startTeam').onclick = startTeamFromPanel;
+
   // Iniciar partida en equipo REAL: solo el líder inicia y TODOS entran juntos.
   if($('playTeam')){
     $('playTeam').onclick = () => {
-      const name = playerName(true);
-      if(!name) return;
-      sendProfile();
-      if(!data.team || !data.team.code) return toast('Primero crea o únete a un equipo');
-      const isLeader = (data.team.leader === name);
-      if(!isLeader) return toast('Espera que el líder inicie la partida');
-      socket.emit('team:start', { code:data.team.code, name });
-      toast('Iniciando partida para el equipo...');
+      startTeamFromPanel();
     };
   }
 
