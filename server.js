@@ -104,8 +104,24 @@ io.on('connection', socket => {
     if(!team) return socket.emit('toast', 'Ese equipo ya no existe');
     if(team.leaderSocket !== socket.id) return socket.emit('toast', 'Solo el líder puede iniciar la partida');
     if((team.members||[]).length < 1) return socket.emit('toast', 'No hay jugadores en el equipo');
+
+    // MATCH REAL: el servidor crea una sala con ID y una semilla igual para todos.
+    const match = {
+      matchId: 'MATCH-' + code + '-' + Date.now().toString(36).toUpperCase(),
+      teamCode: code,
+      mode: team.mode,
+      seed: Math.floor(Math.random() * 2147483647),
+      wave: 1,
+      createdAt: Date.now(),
+      leader: team.leader,
+      members: (team.members || []).map(m => m.name)
+    };
+
     team.started = true;
-    io.to(code).emit('match:start', { code, mode: team.mode, leader: team.leader, members: (team.members||[]).map(m => m.name) });
+    team.match = match;
+
+    // Todos los sockets dentro del room del equipo reciben EXACTAMENTE el mismo matchId y seed.
+    io.to(code).emit('match:start', match);
     emitState();
   });
 
