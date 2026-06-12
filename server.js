@@ -127,6 +127,32 @@ io.on('connection', socket => {
 
   socket.on('team:leave', ({code}) => leaveTeam(socket, code, true));
 
+
+
+  // Sincronización REAL básica del equipo dentro de la partida.
+  // Cada jugador manda su posición normalizada y el servidor la comparte con los demás del mismo match.
+  socket.on('match:pos', p => {
+    const matchId = String(p?.matchId || '');
+    const teamCode = String(p?.teamCode || '').trim().toUpperCase();
+    if(!matchId || !teamCode) return;
+    const team = db.teams[teamCode];
+    if(!team || !team.match || team.match.matchId !== matchId) return;
+    const member = (team.members || []).find(m => m.socketId === socket.id);
+    if(!member) return;
+    const payload = {
+      id: socket.id,
+      name: cleanName(socket.data.name || member.name),
+      x: Math.max(0, Math.min(1, Number(p.x || 0.5))),
+      y: Math.max(0, Math.min(1, Number(p.y || 0.5))),
+      hp: Math.max(0, Math.min(100, Number(p.hp || 100))),
+      weapon: String(p.weapon || 'pistol').slice(0,20),
+      matchId,
+      teamCode,
+      time: Date.now()
+    };
+    socket.to(teamCode).emit('match:player', payload);
+  });
+
   socket.on('score:submit', s => {
     const name = cleanName(socket.data.name || s.name);
     const kills = Math.max(0, Math.floor(Number(s.kills||0)));
